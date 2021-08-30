@@ -8,10 +8,11 @@ public class TicTacToe {
 	static Scanner scan = new Scanner(System.in);
 
 	public static void main(String[] args) {
-		System.out.println("Welcome to the Tic Tac Toe");
+		System.out.println("Welcome to the Tic Tac Toe Game");
 		boardCreation();
 
 		choosingXorO();
+		currentBoard();
 	}
 
 	private static void boardCreation() {
@@ -38,5 +39,21 @@ public class TicTacToe {
 			System.out.println("Your input is invalid");
 			choosingXorO();
 		}
+	}
+	private static void currentBoard() {
+		for (int i = 1; i < 10; i++) {
+			if (board[i] != 'X' && board[i] != 'O') {
+				board[i] = (char) (i + '0');
+			}
+		}
+		showBoard();
+	}
+
+	private static void showBoard() {
+		System.out.println("\n  " + board[1] + " | " + board[2] + " | " + board[3] + " ");
+		System.out.println(" ----------- ");
+		System.out.println("  " + board[4] + " | " + board[5] + " | " + board[6] + " ");
+		System.out.println(" ----------- ");
+		System.out.println("  " + board[7] + " | " + board[8] + " | " + board[9] + " \n");
 	}
 }
