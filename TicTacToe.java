@@ -16,8 +16,8 @@ public class TicTacToe {
 		boardCreation();
 		showBoard();
 		choosingXorO();
-
 		tossCoin();
+
 		outerloop: while (flag == 0) {
 			if ((turn + 1) % 2 == 0) {
 
@@ -28,6 +28,7 @@ public class TicTacToe {
 				userMove();
 
 				currentBoard();
+
 				flag = checkWin();
 				if (flag == 1) {
 					System.out.println("Excellent! You are the winner");
@@ -43,26 +44,34 @@ public class TicTacToe {
 				turn++;
 			} else {
 
-				flag = computerWin();
-				if (flag == 1)
+				flag = checkTie();
+				if (flag != 0) {
+					System.out.println("Nice Play! It's Tie");
+					;
 					break outerloop;
-				flag = computerBlock();
-				if (flag == 1) {
-					turn++;
-					flag = 0;
-					return;
 				}
-				flag = computerCorner();
+
+				flag = computerWin();
 				if (flag == 1) {
-					turn++;
-					flag = 0;
-					return;
+					break outerloop;
 				}
-				flag = computerCenterSide();
-				if (flag == 1) {
-					turn++;
-					flag = 0;
-					return;
+
+				for (int i = 1; i <= 3; i++) {
+					switch (i) {
+					case 1:
+						flag = computerBlock();
+						break;
+					case 2:
+						flag = computerCorner();
+						break;
+					default:
+						flag = computerCenterSide();
+					}
+					if (flag == 1) {
+						turn++;
+						flag = 0;
+						break;
+					}
 				}
 			}
 		}
@@ -95,7 +104,6 @@ public class TicTacToe {
 
 	}
 
-	// Assignment element wih number if it is not marked
 	private static void currentBoard() {
 		for (int i = 1; i < 10; i++) {
 			if (board[i] != 'X' && board[i] != 'O') {
@@ -131,7 +139,6 @@ public class TicTacToe {
 			userMove();
 		} else {
 			board[userNumber] = userMark;
-			System.out.println(userMark + " user is marked " + userNumber);
 		}
 	}
 
@@ -163,7 +170,7 @@ public class TicTacToe {
 		System.out.println("Computer choses '" + computerNumber + "' now user turn");
 	}
 
-	public static int checkWin() {
+	private static int checkWin() {
 		for (int i = 1; i < 9; i++) {
 			int win[] = winArray(i);
 			if (board[win[0]] == board[win[1]] && board[win[1]] == board[win[2]]) {
@@ -201,12 +208,16 @@ public class TicTacToe {
 		}
 	}
 
-	public static int checkTie() {
+	private static int checkTie() {
 		for (int i = 1; i < 10; i++) {
 			if (board[i] == 'X' || board[i] == 'O') {
 				if (i == 9) {
 					flag = 1;
+				} else {
+					continue;
 				}
+			} else {
+				break;
 			}
 		}
 		return flag;
@@ -216,16 +227,19 @@ public class TicTacToe {
 		int winBlock[] = new int[3];
 		for (int i = 1; i < 9; i++) {
 			winBlock = winArray(i);
-		}
-		if (board[winBlock[0]] == board[winBlock[1]] && board[winBlock[0]] == playerMark
-				&& board[winBlock[2]] != opponentMark) {
-			flag = winBlock[2];
-		} else if (board[winBlock[0]] == board[winBlock[2]] && board[winBlock[2]] == playerMark
-				&& board[winBlock[1]] != opponentMark) {
-			flag = winBlock[1];
-		} else if (board[winBlock[1]] == board[winBlock[2]] && board[winBlock[2]] == playerMark
-				&& board[winBlock[0]] != opponentMark) {
-			flag = winBlock[0];
+			if (board[winBlock[0]] == board[winBlock[1]] && board[winBlock[0]] == playerMark
+					&& board[winBlock[2]] != opponentMark) {
+				flag = winBlock[2];
+				break;
+			} else if (board[winBlock[0]] == board[winBlock[2]] && board[winBlock[2]] == playerMark
+					&& board[winBlock[1]] != opponentMark) {
+				flag = winBlock[1];
+				break;
+			} else if (board[winBlock[1]] == board[winBlock[2]] && board[winBlock[2]] == playerMark
+					&& board[winBlock[0]] != opponentMark) {
+				flag = winBlock[0];
+				break;
+			}
 		}
 		return flag;
 	}
@@ -234,9 +248,9 @@ public class TicTacToe {
 		int index = winBlock(computerMark, userMark);
 		if (index != 0) {
 			board[index] = computerMark;
-			System.out.println("My choice is '" + index + "'");
+			System.out.println("Computer choose '" + index + "'");
 			currentBoard();
-			System.out.println("I won. Better Luck next time");
+			System.out.println("Computer won. Better Luck next time");
 			flag = 1;
 		}
 		return flag;
@@ -246,7 +260,7 @@ public class TicTacToe {
 		int index = winBlock(userMark, computerMark);
 		if (index != 0) {
 			board[index] = computerMark;
-			System.out.println("Computer goes for '" + index + "' to block User");
+			System.out.println("Computer goes for '" + index + "' to block you");
 			flag = 1;
 		}
 		return flag;
@@ -254,14 +268,7 @@ public class TicTacToe {
 
 	private static int computerCorner() {
 		int corner[] = { 7, 3, 1, 9 };
-		for (int i = 0; i < 4; i++) {
-			if (board[corner[i]] != 'X' && board[corner[i]] != 'O') {
-				board[corner[i]] = computerMark;
-				System.out.println("Computer choice is '" + corner[i] + "'");
-				flag = 1;
-				break;
-			}
-		}
+		flag = computerOption(corner);
 		return flag;
 	}
 
@@ -272,13 +279,18 @@ public class TicTacToe {
 			flag = 1;
 		} else {
 			int side[] = { 2, 6, 8, 4 };
-			for (int j = 0; j < 4; j++) {
-				if (board[side[j]] != 'X' && board[side[j]] != 'O') {
-					board[side[j]] = computerMark;
-					System.out.println("My choice is '" + side[j] + "'");
-					flag = 1;
-					break;
-				}
+			flag = computerOption(side);
+		}
+		return flag;
+	}
+
+	private static int computerOption(int[] array) {
+		for (int j = 0; j < 4; j++) {
+			if (board[array[j]] != 'X' && board[array[j]] != 'O') {
+				board[array[j]] = computerMark;
+				System.out.println("Computer choice is '" + array[j] + "'");
+				flag = 1;
+				break;
 			}
 		}
 		return flag;
