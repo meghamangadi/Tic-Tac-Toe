@@ -28,7 +28,6 @@ public class TicTacToe {
 				userMove();
 
 				currentBoard();
-
 				flag = checkWin();
 				if (flag == 1) {
 					System.out.println("Excellent! You are the winner");
@@ -54,6 +53,12 @@ public class TicTacToe {
 					return;
 				}
 				flag = computerCorner();
+				if (flag == 1) {
+					turn++;
+					flag = 0;
+					return;
+				}
+				flag = computerCenterSide();
 				if (flag == 1) {
 					turn++;
 					flag = 0;
@@ -255,6 +260,25 @@ public class TicTacToe {
 				System.out.println("Computer choice is '" + corner[i] + "'");
 				flag = 1;
 				break;
+			}
+		}
+		return flag;
+	}
+
+	private static int computerCenterSide() {
+		if (board[5] != 'X' && board[5] != 'O') {
+			board[5] = computerMark;
+			System.out.println("Computer choice is '5'");
+			flag = 1;
+		} else {
+			int side[] = { 2, 6, 8, 4 };
+			for (int j = 0; j < 4; j++) {
+				if (board[side[j]] != 'X' && board[side[j]] != 'O') {
+					board[side[j]] = computerMark;
+					System.out.println("My choice is '" + side[j] + "'");
+					flag = 1;
+					break;
+				}
 			}
 		}
 		return flag;
