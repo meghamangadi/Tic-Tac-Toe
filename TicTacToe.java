@@ -21,24 +21,22 @@ public class TicTacToe {
 		outerloop: while (flag == 0) {
 			if ((turn + 1) % 2 == 0) {
 
+				flag = checkTie();
+				if (flag != 0) {
+					System.out.println("Nice Play! It's Tie");
+					;
+					break outerloop;
+				}
+
 				currentBoard();
 
 				userCall();
 
 				userMove();
 
-				currentBoard();
-
 				flag = checkWin();
-				if (flag == 1) {
+				if (flag != 0) {
 					System.out.println("Excellent! You are the winner");
-					break outerloop;
-				}
-
-				flag = checkTie();
-				if (flag == 1) {
-					System.out.println("Nice Play! It's Tie");
-					;
 					break outerloop;
 				}
 				turn++;
@@ -75,6 +73,8 @@ public class TicTacToe {
 				}
 			}
 		}
+
+		gameAgain();
 	}
 
 	private static void boardCreation() {
@@ -295,4 +295,16 @@ public class TicTacToe {
 		}
 		return flag;
 	}
+
+	private static void gameAgain() {
+		System.out.println("\nWanna play again. 1) Restart 2) Exit");
+		int option = scan.nextInt();
+		if (option == 1) {
+			String[] args = {};
+			main(args);
+		} else {
+			System.exit(1);
+		}
+	}
+
 }
